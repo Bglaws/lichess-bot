@@ -341,6 +341,10 @@ def lichess_bot_main(li: lichess.Lichess,
     :param logging_queue: The logging queue. Used by `logging_listener_proc`.
     :param one_game: Whether the bot should play only one game. Only used in `test_bot/test_bot.py` to test lichess-bot.
     """
+
+    # counter for games played in a session
+    games_played = 0
+
     max_games = config.challenge.concurrency
 
     one_game_completed = False
@@ -387,6 +391,15 @@ def lichess_bot_main(li: lichess.Lichess,
                 matchmaker.game_done()
                 log_proc_count("Freed", active_games)
                 one_game_completed = True
+
+                games_played += 1
+                logger.info(f"Game finished. Total games played: {games_played}")
+
+                if games_played >= config.game_count:
+                    logger.info("game count reached. shutting down.")
+                    stop.terminated = True
+                    break
+
             elif event["type"] == "challenge":
                 handle_challenge(event, li, challenge_queue, config.challenge, user_profile, recent_bot_challenges)
             elif event["type"] == "challengeDeclined":

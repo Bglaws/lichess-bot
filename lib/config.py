@@ -142,6 +142,10 @@ def insert_default_values(CONFIG: CONFIG_DICT_TYPE) -> None:
 
     :param CONFIG: The bot's config.
     """
+    
+    # set number of games to play
+    set_config_default(CONFIG, key="game_count", default=5) 
+    
     set_config_default(CONFIG, key="abort_time", default=20)
     set_config_default(CONFIG, key="move_overhead", default=1000)
     set_config_default(CONFIG, key="quit_after_all_games_finish", default=False)
